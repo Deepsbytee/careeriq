@@ -1,8 +1,12 @@
+
 import axios from "axios";
 
-const BASE_URL =
+const BASE_URL = (
   import.meta.env.VITE_API_URL ||
-  "http://localhost:8000/api/v1";
+  "http://localhost:8000/api/v1"
+).replace(/\/+$/, "");
+
+console.log("CareerIQ API BASE_URL:", BASE_URL);
 
 export const api = axios.create({
   baseURL: BASE_URL,
@@ -28,17 +32,28 @@ api.interceptors.response.use(
   },
 );
 
-/** The message to show a user for a failed request: the server's own explanation when it gave one. */
 export function errorMessage(err: unknown, fallback: string): string {
-  const e = err as { response?: { data?: { detail?: unknown } }; code?: string; message?: string };
+  const e = err as {
+    response?: { data?: { detail?: unknown } };
+    code?: string;
+    message?: string;
+  };
+
   const detail = e?.response?.data?.detail;
+
   if (typeof detail === "string" && detail.trim()) return detail;
-  if (!e?.response) return "Can't reach the server. Check that the backend is running.";
+
+  if (!e?.response) {
+    return "Can't reach the server. Check that the backend is running.";
+  }
+
   return fallback;
 }
 
-/** Download a file the API protects behind login (a plain link can't send the token). */
-export async function downloadFile(path: string, filename: string): Promise<void> {
+export async function downloadFile(
+  path: string,
+  filename: string,
+): Promise<void> {
   const res = await api.get(path, { responseType: "blob" });
   const url = URL.createObjectURL(res.data);
   const a = document.createElement("a");
@@ -50,7 +65,9 @@ export async function downloadFile(path: string, filename: string): Promise<void
   URL.revokeObjectURL(url);
 }
 
-export function scoreTone(score: number | null | undefined): "good" | "mid" | "low" | "none" {
+export function scoreTone(
+  score: number | null | undefined,
+): "good" | "mid" | "low" | "none" {
   if (score == null) return "none";
   return score >= 75 ? "good" : score >= 50 ? "mid" : "low";
 }
@@ -61,7 +78,6 @@ export interface Health {
   ai: { provider: string; model: string; configured: boolean };
 }
 
-/** Server status, including whether demo accounts exist. Lives at the API root, outside /api/v1. */
 export async function fetchHealth(): Promise<Health | null> {
   try {
     const root = BASE_URL.replace(/\/api\/v1\/?$/, "");
