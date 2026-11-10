@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply scroll-smooth antialiased;
+    font-size: 16px;
+    color-scheme: light;
+  }
+
+  body {
+    @apply bg-surface text-slate-100 font-sans min-h-screen;
+    background-image:
+      radial-gradient(ellipse 70% 45% at 8% -10%, rgba(247, 217, 223, 0.75), transparent),
+      radial-gradient(ellipse 60% 40% at 100% 100%, rgba(143, 168, 89, 0.22), transparent);
+    background-attachment: fixed;
+  }
+
+  h1, h2 {
+    @apply font-serif;
+    font-optical-sizing: auto;
+    letter-spacing: -0.01em;
+  }
+
+  ::selection {
+    background: #F7D9DF;
+    color: #5C0F26;
+  }
+
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { @apply bg-surface-1; }
+  ::-webkit-scrollbar-thumb { @apply bg-border rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-slate-600; }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-surface-card backdrop-blur-xl border border-border shadow-card;
+  }
+
+  .glass-strong {
+    @apply bg-surface-2/90 backdrop-blur-2xl border border-border;
+  }
+
+  /* Serif display text in cherry. Replaces the old purple gradient text. */
+  .gradient-text {
+    @apply font-serif text-indigo-500;
+  }
+
+  .gradient-border {
+    position: relative;
+  }
+
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(122, 22, 51, 0.45), rgba(143, 168, 89, 0.35));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* The yellow-marker look used wherever we quote the user's own resume text. */
+  .quote-mark {
+    background: #F7D9DF;
+    border-bottom: 1.5px solid #C2294A;
+    padding: 0 2px;
+    border-radius: 2px;
+  }
+
+  /* Same marker look in matcha, for quotes that show something good (strengths, proof of a met requirement). */
+  .quote-good {
+    background: rgba(94, 138, 58, 0.16);
+    border-bottom: 1.5px solid #5E8A3A;
+    padding: 0 2px;
+    border-radius: 2px;
+  }
+
+  .text-muted { @apply text-slate-400; }
+  .text-subtle { @apply text-slate-500; }
+
+  @media print {
+    body { background: #fff !important; }
+    .no-print { display: none !important; }
+  }
+}
